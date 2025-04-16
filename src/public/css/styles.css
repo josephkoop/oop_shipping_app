@@ -1,0 +1,128 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.print-label li{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.container {
+    width: 80%;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.modal {
+    display: block;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+}
+
+.close {
+    float: right;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.hide{
+    display: none;
+}
+
+.highlight{
+    border: 2px solid blue;
+}
+
+.package-heading, .package-info{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    padding-left: 20px;
+}
+
+.task-heading{
+    padding-top: 2rem;
+    border-top: 3px solid var(--highlight1);
+}
+
+.column-name{
+    font-weight: bold;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
+
+img{
+    position: relative;
+    justify-self: left;
+    align-self: center;
+    max-width: 20px;
+}
+
+.menu-icon{
+    max-width: 50px;
+}
+
+.form{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+}
+
+form button{
+    width: 200px;
+}
+
+.label{
+    list-style: none;
+}
+
+.label li{
+    padding: 5px;
+}
+
+select{
+    max-width: 200px;
+}
+
+#total-cost{
+    border-top: 3px solid black;
+    max-width: 300px;
+}

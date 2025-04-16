@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Package List</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Package List</h1>
+        <button id="add-btn">Add Package</button>
+        <!-- Menu Icon -->
+        
+        <div id="">
+            <ul id="packages-container">
+                <li class="package-heading">
+                    <p class="column-name">ID</p>
+                    <p class="column-name">Sender Name</p>
+                    <p class="column-name">Receiver Name</p>
+                    <p class="column-name">Tracking Number</p>
+                    <p class="column-name">Shipping Method</p>
+                    <p class="column-name">FlatShipping Fee</p>
+                    <p class="column-name">Status</p>
+                    <p class="column-name">Action</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <script src="../js/script.js"></script>
+    
+    <!-- Control Modal -->
+    <div id="control-modal" class="modal hide">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <button id="edit-btn">Edit</button>
+            <button id="update-btn">Update Status</button>
+            <button id="delete-btn">Delete</button>
+            <button id="print-btn">Print Label</button>
+            <button id="calculate-btn">Calculate Shipping Cost</button>
+        </div>
+    </div>
+
+    <!-- Calculate Modal -->
+    <div id="calculate-modal" class="modal hide">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Calculate Shipping Cost</h2>
+            <ul class="label print-label">
+                <li><p>Tracking Number: </p><p id="calculate-tracking-number"></p></li>
+                <li><p>Shipping Method: </p><p id="calculate-shipping-method"></p></li>
+                <li><p>Flat Shipping Fee: </p><p id="calculate-flat-fee"></p></li>
+                <li><p>Package Weight: </p><p id="calculate-package-weight"></p></li>
+                <li><p>Cost Per Weight Unit: </p><p id="calculate-cost-weight"></p></li>
+                <li><p>Total Cost: </p><p id="calculate-total-cost"></p></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Update Modal -->
+    <div id="update-modal" class="modal hide">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Update Status</h2>
+            <form class="form" id="update-form" method="POST" action="/update">
+                <div>
+                    <input type="number" name="id" id="update-id" hidden>
+                    
+                    <label for="status">Status:</label>
+                    <select name="status_id" id="update-status-id">
+                        <option value=1>Ordered</option>
+                        <option value=2>Shipped</option>
+                        <option value=3>Delivered</option>
+                        <option value=4>Delayed</option>
+                    </select>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Print Modal -->
+    <div id="print-modal" class="modal hide">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Print Label</h2>
+            <ul class="label print-label">
+                <li><p>ID: </p><p id="print-id"></p></li>
+                <li><p>Retailer Name: </p><p id="print-retailer-name"></p></li>
+                <li><p>Retailer Address: </p><p id="print-retailer-address"></p></li>
+                <li><p>Customer Name: </p><p id="print-customer-name"></p></li>
+                <li><p>Customer Address: </p><p id="print-customer-address"></p></li>
+                <li><p>Tracking Number: </p><p id="print-tracking-number"></p></li>
+                <li><p>Shipping Method: </p><p id="print-shipping-method"></p></li>
+                <li><p>Package Weight: </p><p id="print-package-weight"></p></li>
+                <li><p>Cost Per Weight Unit: </p><p id="print-cost-weight"></p></li>
+                <li><p>Flat Shipping Fee: </p><p id="print-flat-fee"></p></li>
+                <li><p>Status: </p><p id="print-status-id"></p></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div id="delete-modal" class="modal hide">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Delete Package</h2>
+            <form class="form" id="delete-form" method="POST" action="/delete">
+                <input type="number" name="id" id="delete-id" hidden>
+
+                <p for="">Are you sure you want to delete this package?</p>
+                <button type="submit">Delete</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Add Modal -->
+    <div id="add-modal" class="modal hide">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Package</h2>
+            <form class="form" id="add-form" method="POST" action="/add">
+                <div>
+                    <label for="retailer_id">Retailer:</label>
+                    <select id="add-retailer-id" name="retailer_id">
+                        <option value="1">Retailer 1</option>
+                        <option value="2">Retailer 2</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="customer_id">Customer:</label>
+                    <select id="add-customer-id" name="customer_id">
+                        <option value="1">Customer 1</option>
+                        <option value="2">Customer 2</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="shipping_method">Shipping Method:</label>
+                    <select id="add-shipping-method" name="shipping_method">
+                        <option value=1>1-Day</option>
+                        <option value=2>2-Day</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="package_weight">Package Weight:</label>
+                    <input name="package_weight" id="add-package-weight" required>
+                </div>
+                
+                <div>
+                    <label for="cost_weight">Cost Weight:</label>
+                    <input name="cost_weight" id="add-cost-weight" required>
+                </div>
+                
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal hide">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Package</h2>
+            <form class="form" id="edite-form" method="POST" action="/edit">
+
+                <input type="number" name="id" id="edit-id" hidden>
+
+                <!-- <input type="hidden" name="_method" value="PUT" hidden> -->
+
+                <div>
+                    <label for="retailer_id">Retailer:</label>
+                    <select id="edit-retailer-id" name="retailer_id">
+                        <option value="1">Retailer 1</option>
+                        <option value="2">Retailer 2</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="customer_id">Customer:</label>
+                    <select id="edit-customer-id" name="customer_id">
+                        <option value="1">Customer 1</option>
+                        <option value="2">Customer 2</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="status_id">Status:</label>
+                    <select id="edit-status-id" name="status_id">
+                        <option value="1">Ordered</option>
+                        <option value="2">Shipped</option>
+                        <option value="3">Delivered</option>
+                        <option value="4">Delayed</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="tracking_number">Tracking Number:</label>
+                    <input type="number" name="tracking_number" id="edit-tracking-number" required>
+                </div>
+
+                <div>
+                    <label for="shipping_method">Shipping Method:</label>
+                    <select id="edit-shipping-method" name="shipping_method">
+                        <option value=1>1-Day</option>
+                        <option value=2>2-Day</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="package_weight">Package Weight:</label>
+                    <input name="package_weight" id="edit-package-weight" required>
+                </div>
+                
+                <div>
+                    <label for="cost_weight">Cost Weight:</label>
+                    <input name="cost_weight" id="edit-cost-weight" required>
+                </div>
+                
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+</html>
