@@ -1,10 +1,4 @@
-//retailer_id and customer_id don't always auto-fill in edit form
-//package_weight only accepts integers
-//put method doesn't work
 //foreign tables aren't up
-//close both modals at a time
-
-
 
 $(document).ready(function(){
 
@@ -72,29 +66,6 @@ $(document).ready(function(){
             console.error('Error loading packages:', error);
         }
     }
-    
-    // const oneDayDiv = $('#oneDayPackages');
-    // const twoDayDiv = $('#twoDayPackages');
-    
-    // if (oneDayDiv.length && twoDayDiv.length) {
-    //     oneDayDiv.html('<h2>One-Day Packages</h2>');
-    //     twoDayDiv.html('<h2>Two-Day Packages</h2>');
-    
-    //     packages.forEach(pkg => {
-    //         const li = $('<li<</li>');
-    //         li.text(`${pkg.trackingNumber} - ${pkg.status}`);
-    //         li.on('click', function() {
-    //             localStorage.setItem('selectedPackage', JSON.stringify(pkg));
-    //             window.location.href = 'package.html';
-    //         });
-    
-    //         if (pkg.shippingMethod === 'OneDay') {
-    //             oneDayDiv.append(li);
-    //         } else if (pkg.shippingMethod === 'TwoDay') {
-    //             twoDayDiv.append(li);
-    //         }
-    //     });
-    // }
 
     addBtn.click( function() { display(addModal) });
     editBtn.click( function() { 
@@ -190,8 +161,6 @@ $(document).ready(function(){
             const response = await fetch(`/calculate/${selectedPackageId}`);
             const data = await response.json();
 
-            console.log("front end retrieved: ", data);
-
             if(data.err){
                 console.error('Error loading packages:', data.err);
                 return;
@@ -200,7 +169,7 @@ $(document).ready(function(){
             let order = data.package;
 
             $('#calculate-tracking-number').text(order.trackingNumber);
-            $('#calculate-shipping-method').text();
+            $('#calculate-shipping-method').text(order.shippingMethod);
             $('#calculate-flat-fee').text(order.flatFee);
             $('#calculate-package-weight').text(order.packageWeight);
             $('#calculate-cost-weight').text(order.costWeight);
@@ -219,6 +188,7 @@ $(document).ready(function(){
 
     $('.close').on('click', function () { 
         hide($(this).closest('.modal'));
+        hide($('#control-modal'));
         selectedPackageId = null;
     });
     
@@ -226,6 +196,8 @@ $(document).ready(function(){
         $('.modal').each(function() {
             if (event.target === this) {
                 hide($(this)); 
+                hide($('#control-modal'));
+                selectedPackageId = null;
             }
         });
     });

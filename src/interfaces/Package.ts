@@ -5,6 +5,7 @@ export interface Package {
     customer_id: number;
     status_id: number;
     tracking_number: number;
+    shipping_method: number;
     package_weight: number;
     cost_weight: number;
 

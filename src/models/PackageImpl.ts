@@ -9,6 +9,7 @@ export class PackageImpl implements Package {
         public customer_id: number,
         public status_id: number,
         public tracking_number: number,
+        public shipping_method: number,
         public package_weight: number,
         public cost_weight: number,
     ) {}
@@ -22,51 +23,44 @@ export class PackageImpl implements Package {
         await query('DELETE FROM orders WHERE id = $1', [this.id]);
     }
 
-    static async selectAll(): Promise<{ one: PackageImpl[]; two: PackageImpl[] } | null> {
-        const result1 = await query('SELECT * FROM orders WHERE shipping_method = 1 ORDER BY id');
-        const result2 = await query('SELECT * FROM orders WHERE shipping_method = 2 ORDER BY id');
-        if(result1.rows.length === 0 && result2.rows.length) return null;
+    static async selectAll(): Promise<PackageImpl[] | null> {
+        const result = await query('SELECT * FROM orders ORDER BY id');
+        if(result.rows.length === 0) return null;
 
-        const packages = {
-            one: result1.rows.map((row: any) => new PackageImpl(
-                row.id,
-                row.retailer_id,
-                row.customer_id,
-                row.status_id,
-                row.tracking_number,
-                row.package_weight,
-                row.cost_weight
-            )),
-            two: result2.rows.map((row: any) => new PackageImpl(
-                row.id,
-                row.retailer_id,
-                row.customer_id,
-                row.status_id,
-                row.tracking_number,
-                row.package_weight,
-                row.cost_weight
-            ))
-        };
+        const packages = result.rows.map((row: any) => new PackageImpl(
+            row.id,
+            row.retailer_id,
+            row.customer_id,
+            row.status_id,
+            row.tracking_number,
+            row.shipping_method,
+            row.package_weight,
+            row.cost_weight
+        ));
 
         return packages;
     }
 
-    static async selectById(id: number): Promise<any> {
+    static async selectById(id: number, shippingMethod?: number): Promise<any> {
         const result = await query('SELECT * FROM orders WHERE id = $1 LIMIT 1', [id]);
         if(result.rows.length === 0) return null;
 
-        const row = result.rows[0];
-
         const { OneDayImpl } = await import("./OneDayImpl");
-        const { TwoDayImpl } = await import( "./TwoDayImpl");
+        const { TwoDayImpl } = await import("./TwoDayImpl");
 
-        if(row.shipping_method === 1){
+        const row = result.rows[0];
+        const shipping_method = (shippingMethod == undefined) ? row.shipping_method : shippingMethod;
+
+        console.log("retrieving package, model -> controller: ", shipping_method);
+
+        if(shipping_method == 1){
             return new OneDayImpl(
                 row.id,
                 row.retailer_id,
                 row.customer_id,
                 row.status_id,
                 row.tracking_number,
+                shipping_method,
                 row.package_weight,
                 row.cost_weight
             );
@@ -77,38 +71,46 @@ export class PackageImpl implements Package {
                 row.customer_id,
                 row.status_id,
                 row.tracking_number,
+                shipping_method,
                 row.package_weight,
                 row.cost_weight
             );
         }
     }
 
-    static async addPackage(retailer_id: number, customer_id: number, shipping_method: number, package_weight: number, cost_weight: number): Promise<any> {
-        const { OneDayImpl } = await import("./OneDayImpl");
-        const { TwoDayImpl } = await import( "./TwoDayImpl");
+    static async addPackage(retailer_id: number, customer_id: number, shipping_method: number, package_weight: number, cost_weight: number): Promise<void> {
+        
+       const { OneDayImpl } = await import("./OneDayImpl");
+       const { TwoDayImpl } = await import("./TwoDayImpl");
 
         const tracking_number = Math.floor(Math.random() * 9000000000 + 1000000000);
 
         if(shipping_method === 1){
-            return new OneDayImpl(
+            const newPackage = new OneDayImpl(
                 0,
                 retailer_id,
                 customer_id,
                 1,
                 tracking_number,
+                shipping_method,
                 package_weight,
                 cost_weight
             );
+
+            newPackage.savePackage();
         }else{
-            return new TwoDayImpl(
+            const newPackage = new TwoDayImpl(
                 0,
                 retailer_id,
                 customer_id,
                 1,
                 tracking_number,
+                shipping_method,
                 package_weight,
                 cost_weight
             );
+
+            newPackage.savePackage();
         }
     }
 }

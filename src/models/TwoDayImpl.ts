@@ -10,6 +10,7 @@ export class TwoDayImpl extends PackageImpl implements TwoDay {
         customer_id: number,
         status_id: number,
         tracking_number: number,
+        shipping_method: number,
         package_weight: number,
         cost_weight: number,
     ) {
@@ -19,6 +20,7 @@ export class TwoDayImpl extends PackageImpl implements TwoDay {
             customer_id,
             status_id,
             tracking_number,
+            shipping_method,
             package_weight,
             cost_weight,
         );
@@ -41,11 +43,12 @@ export class TwoDayImpl extends PackageImpl implements TwoDay {
         this.id = result.rows[0].id;
     }
 
-    async editPackage(id: number, retailer_id: number, customer_id: number, status_id: number, tracking_number: number, package_weight: number, cost_weight: number): Promise<void>{
+    async editPackage(id: number, retailer_id: number, customer_id: number, status_id: number, tracking_number: number, shipping_method: number, package_weight: number, cost_weight: number): Promise<void>{
         this.retailer_id = retailer_id;
         this.customer_id = customer_id;
         this.status_id = status_id;
         this.tracking_number = tracking_number;
+        this.shipping_method = shipping_method;
         this.package_weight = package_weight;
         this.cost_weight = cost_weight;
         this.id = id;
@@ -66,7 +69,7 @@ export class TwoDayImpl extends PackageImpl implements TwoDay {
 
     async calculatePackage(): Promise<object> {
         const totalCost1 = this.package_weight * this.cost_weight + TwoDayImpl.flat_fee;
-        const resultObject = { trackingNumber: this.tracking_number, flatFee: TwoDayImpl.flat_fee, packageWeight: this.package_weight, costWeight: this.cost_weight, totalCost: totalCost1 }
+        const resultObject = { trackingNumber: this.tracking_number, flatFee: TwoDayImpl.flat_fee, shippingMethod: TwoDayImpl.shipping_method, packageWeight: this.package_weight, costWeight: this.cost_weight, totalCost: totalCost1 }
 
         return resultObject;
     }

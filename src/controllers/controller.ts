@@ -19,12 +19,7 @@ export const viewPackages = async (req: Request, res: Response): Promise<void> =
             res.json({ packages: [] });
             return;
         }
-        const oneDay = packages.one.map(pkg => ({ ...pkg, shipping_method: 1 }));
-        const twoDay = packages.two.map(pkg => ({ ...pkg, shipping_method: 2 }));
-
-        const allPackages = [...oneDay, ...twoDay];
-        allPackages.sort((a, b) => a.id - b.id);
-        res.json({ packages: allPackages });
+        res.json({ packages: packages });
     } catch (error) {
         console.error('Error fetching packages:', error);
         res.status(500).json({ err: 'Error Fetching packages.' });
@@ -34,8 +29,7 @@ export const viewPackages = async (req: Request, res: Response): Promise<void> =
 export const addPackage = async (req: Request, res: Response): Promise<void> => {
     const { retailer_id, customer_id, shipping_method, package_weight, cost_weight } = req.body;
     try {
-        const selectPackage = await PackageImpl.addPackage(retailer_id, customer_id, shipping_method, package_weight, cost_weight);
-        selectPackage.savePackage();
+        await PackageImpl.addPackage(retailer_id, customer_id, shipping_method, package_weight, cost_weight);
         res.redirect('/');
     } catch (error) {
         console.error(error);
@@ -44,12 +38,12 @@ export const addPackage = async (req: Request, res: Response): Promise<void> => 
 }
 
 export const editPackage = async (req: Request, res: Response): Promise<void> => {
-    const { id, retailer_id, customer_id, status_id, tracking_number, package_weight, cost_weight } = req.body;
+    const { id, retailer_id, customer_id, status_id, tracking_number, shipping_method, package_weight, cost_weight } = req.body;
     let selectPackage;
     try {
-        selectPackage = await PackageImpl.selectById(id);
+        selectPackage = await PackageImpl.selectById(id, shipping_method);
         if(selectPackage){
-            await selectPackage.editPackage(id, retailer_id, customer_id, status_id, tracking_number, package_weight, cost_weight);
+            await selectPackage.editPackage(id, retailer_id, customer_id, status_id, tracking_number, shipping_method, package_weight, cost_weight);
         }
         res.redirect('/');
     } catch (error) {
