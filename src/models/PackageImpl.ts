@@ -23,22 +23,27 @@ export class PackageImpl implements Package {
         await query('DELETE FROM orders WHERE id = $1', [this.id]);
     }
 
-    static async selectAll(): Promise<PackageImpl[] | null> {
-        const result = await query('SELECT * FROM orders ORDER BY id');
-        if(result.rows.length === 0) return null;
+    static async selectAll(): Promise<{ packages: any[], customers: any[], retailers: any[], statuses: any[] } | null> {
+        const packages = await query(
+            'SELECT orders.*, retailers.name as retailer_name, customers.name as customer_name, statuses.name as status_name FROM orders LEFT JOIN retailers ON retailers.id = orders.retailer_id LEFT JOIN customers ON customers.id = orders.customer_id LEFT JOIN statuses ON statuses.id = orders.status_id ORDER BY orders.id'
+        );
+        const customers1 = await query('SELECT * FROM customers ORDER BY id');
+        const retailers1 = await query('SELECT * FROM retailers ORDER BY id');
+        const statuses1 = await query('SELECT * FROM statuses ORDER BY id');
 
-        const packages = result.rows.map((row: any) => new PackageImpl(
-            row.id,
-            row.retailer_id,
-            row.customer_id,
-            row.status_id,
-            row.tracking_number,
-            row.shipping_method,
-            row.package_weight,
-            row.cost_weight
-        ));
+        if(packages.rows.length === 0 || customers1.rows.length === 0 || retailers1.rows.length === 0 || statuses1.rows.length === 0) return null;
 
-        return packages;
+        return { packages: packages.rows, customers: customers1.rows, retailers: retailers1.rows, statuses: statuses1.rows };
+    }
+
+    static async printLabel(id: number): Promise<any | null> {
+        const packages = await query(
+            `SELECT orders.*, retailers.name as retailer_name, retailers.address as retailer_address, customers.name as customer_name, customers.address as customer_address, statuses.name as status_name FROM orders LEFT JOIN retailers ON retailers.id = orders.retailer_id LEFT JOIN customers ON customers.id = orders.customer_id LEFT JOIN statuses ON statuses.id = orders.status_id WHERE orders.id = $1 LIMIT 1`, [id]
+        );
+
+        if(packages.rows.length === 0) return null;
+
+        return packages.rows[0];
     }
 
     static async selectById(id: number, shippingMethod?: number): Promise<any> {
@@ -50,8 +55,6 @@ export class PackageImpl implements Package {
 
         const row = result.rows[0];
         const shipping_method = (shippingMethod == undefined) ? row.shipping_method : shippingMethod;
-
-        console.log("retrieving package, model -> controller: ", shipping_method);
 
         if(shipping_method == 1){
             return new OneDayImpl(

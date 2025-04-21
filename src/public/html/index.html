@@ -18,10 +18,9 @@
                     <p class="column-name">ID</p>
                     <p class="column-name">Sender Name</p>
                     <p class="column-name">Receiver Name</p>
+                    <p class="column-name">Status</p>
                     <p class="column-name">Tracking Number</p>
                     <p class="column-name">Shipping Method</p>
-                    <p class="column-name">FlatShipping Fee</p>
-                    <p class="column-name">Status</p>
                     <p class="column-name">Action</p>
                 </li>
             </ul>
@@ -86,17 +85,12 @@
             <span class="close">&times;</span>
             <h2>Print Label</h2>
             <ul class="label print-label">
-                <li><p>ID: </p><p id="print-id"></p></li>
+                <li><p>Tracking Number: </p><p id="print-tracking-number"></p></li>
                 <li><p>Retailer Name: </p><p id="print-retailer-name"></p></li>
                 <li><p>Retailer Address: </p><p id="print-retailer-address"></p></li>
                 <li><p>Customer Name: </p><p id="print-customer-name"></p></li>
                 <li><p>Customer Address: </p><p id="print-customer-address"></p></li>
-                <li><p>Tracking Number: </p><p id="print-tracking-number"></p></li>
-                <li><p>Shipping Method: </p><p id="print-shipping-method"></p></li>
-                <li><p>Package Weight: </p><p id="print-package-weight"></p></li>
-                <li><p>Cost Per Weight Unit: </p><p id="print-cost-weight"></p></li>
-                <li><p>Flat Shipping Fee: </p><p id="print-flat-fee"></p></li>
-                <li><p>Status: </p><p id="print-status-id"></p></li>
+                <li><p>Status: </p><p id="print-status-name"></p></li>
             </ul>
         </div>
     </div>
@@ -124,16 +118,14 @@
                 <div>
                     <label for="retailer_id">Retailer:</label>
                     <select id="add-retailer-id" name="retailer_id">
-                        <option value="1">Retailer 1</option>
-                        <option value="2">Retailer 2</option>
+                        <option disabled selected>Select</option>
                     </select>
                 </div>
                 
                 <div>
                     <label for="customer_id">Customer:</label>
                     <select id="add-customer-id" name="customer_id">
-                        <option value="1">Customer 1</option>
-                        <option value="2">Customer 2</option>
+                        <option disabled selected>Select</option>
                     </select>
                 </div>
                 
@@ -171,28 +163,17 @@
 
                 <div>
                     <label for="retailer_id">Retailer:</label>
-                    <select id="edit-retailer-id" name="retailer_id">
-                        <option value=1>Retailer 1</option>
-                        <option value=2>Retailer 2</option>
-                    </select>
+                    <select id="edit-retailer-id" name="retailer_id"></select>
                 </div>
                 
                 <div>
                     <label for="customer_id">Customer:</label>
-                    <select id="edit-customer-id" name="customer_id">
-                        <option value=1>Customer 1</option>
-                        <option value=2>Customer 2</option>
-                    </select>
+                    <select id="edit-customer-id" name="customer_id"></select>
                 </div>
 
                 <div>
                     <label for="status_id">Status:</label>
-                    <select id="edit-status-id" name="status_id">
-                        <option value=1>Ordered</option>
-                        <option value=2>Shipped</option>
-                        <option value=3>Delivered</option>
-                        <option value=4>Delayed</option>
-                    </select>
+                    <select id="edit-status-id" name="status_id"></select>
                 </div>
                 
                 <div>

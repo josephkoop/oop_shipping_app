@@ -67,8 +67,9 @@ button:hover {
 }
 
 .package-heading, .package-info{
+    width: 100%;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     padding-left: 20px;
 }
 
@@ -112,6 +113,7 @@ form button{
 
 .label{
     list-style: none;
+    border: 2px solid black;
 }
 
 .label li{

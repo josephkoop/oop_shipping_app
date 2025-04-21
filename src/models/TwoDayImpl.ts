@@ -68,8 +68,8 @@ export class TwoDayImpl extends PackageImpl implements TwoDay {
     }
 
     async calculatePackage(): Promise<object> {
-        const totalCost1 = this.package_weight * this.cost_weight + TwoDayImpl.flat_fee;
-        const resultObject = { trackingNumber: this.tracking_number, flatFee: TwoDayImpl.flat_fee, shippingMethod: TwoDayImpl.shipping_method, packageWeight: this.package_weight, costWeight: this.cost_weight, totalCost: totalCost1 }
+        const totalCost1 = (this.package_weight * this.cost_weight + TwoDayImpl.flat_fee).toFixed(2);
+        const resultObject = { trackingNumber: this.tracking_number, flatFee: TwoDayImpl.flat_fee.toFixed(2), shippingMethod: TwoDayImpl.shipping_method, packageWeight: this.package_weight, costWeight: this.cost_weight, totalCost: totalCost1 }
 
         return resultObject;
     }

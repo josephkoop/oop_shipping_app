@@ -5,6 +5,9 @@ $(document).ready(function(){
     loadPackages();
 
     var orders;
+    var retailers;
+    var customers;
+    var statuses;
 
     let selectedPackageId = null;
 
@@ -28,17 +31,15 @@ $(document).ready(function(){
     function display (element) { element.removeClass("hide"); }
     function hide (element) { element.addClass("hide"); }
 
-    function compilePackage(id, retailer_id, customer_id, status_id, tracking_number, shipping_method, package_weight, cost_weight){
+    function compilePackage(id, retailer_name, customer_name, status_name, tracking_number, shipping_method){
         const packageHtml = `
             <li class="package-info" data-id="${id}">
-                <p class="">ID: ${id}</p>
-                <p class="">Retailer ID: ${retailer_id}</p>
-                <p class="">Customer ID: ${customer_id}</p>
-                <p class="">Status ID: ${status_id}</p>
-                <p class="">Tracking Number: ${tracking_number}</p>
-                <p class="">Shipping Method: ${shipping_method}</p>
-                <p class="">Package Weight: ${package_weight}</p>
-                <p class="">Cost Weight: ${cost_weight}</p>
+                <p class="">${id}</p>
+                <p class="">${retailer_name}</p>
+                <p class="">${customer_name}</p>
+                <p class="">${status_name}</p>
+                <p class="">${tracking_number}</p>
+                <p class="">${shipping_method}-day</p>
                 <button class="menu-icon">☰</button>
             </li>`
     
@@ -55,9 +56,12 @@ $(document).ready(function(){
                 return;
             }
     
-            orders = data.packages;
+            orders = data.packages.packages;
+            retailers = data.packages.retailers;
+            customers = data.packages.customers;
+            statuses = data.packages.statuses;
             orders.forEach(package => {
-                const packageHtml = compilePackage(package.id, package.retailer_id, package.customer_id, package.status_id, package.tracking_number, package.shipping_method, package.package_weight, package.cost_weight);
+                const packageHtml = compilePackage(package.id, package.retailer_name, package.customer_name, package.status_name, package.tracking_number, package.shipping_method);
                 $('#packages-container').append(packageHtml);
             });
     
@@ -67,7 +71,23 @@ $(document).ready(function(){
         }
     }
 
-    addBtn.click( function() { display(addModal) });
+    addBtn.click( function() {
+
+        $('#add-retailer-id').empty();
+        $('#add-customer-id').empty();
+
+        retailers.forEach(retailer => {
+            let option = `<option value=${retailer.id}>${retailer.name}</option>`;
+            $('#add-retailer-id').append(option);
+        });
+
+        customers.forEach(customer => {
+            let option = `<option value=${customer.id}>${customer.name}</option>`;
+            $('#add-customer-id').append(option);
+        });
+        display(addModal);
+    });
+
     editBtn.click( function() { 
         if(selectedPackageId === null){
             console.error('Coding Error: No package selected.');
@@ -79,6 +99,25 @@ $(document).ready(function(){
             console.error('Coding Error: Package not found.');
             return;
         }
+
+        $('#edit-retailer-id').empty();
+        $('#edit-customer-id').empty();
+        $('#edit-status-id').empty();
+
+        retailers.forEach(retailer => {
+            let option = `<option value=${retailer.id}>${retailer.name}</option>`;
+            $('#edit-retailer-id').append(option);
+        });
+
+        customers.forEach(customer => {
+            let option = `<option value=${customer.id}>${customer.name}</option>`;
+            $('#edit-customer-id').append(option);
+        });
+        
+        statuses.forEach(status => {
+            let option = `<option value=${status.id}>${status.name}</option>`;
+            $('#edit-status-id').append(option);
+        });
 
         $('#edit-id').val(selectedPackageId);
         $('#edit-retailer-id').val(editOrder.retailer_id);
@@ -99,7 +138,6 @@ $(document).ready(function(){
         }
 
         $('#delete-id').val(selectedPackageId);
-        console.log('front-end id:', $('#delete-id').val(), ' check:', selectedPackageId);
         display(deleteModal); 
     });
 
@@ -129,6 +167,8 @@ $(document).ready(function(){
             const response = await fetch(`/print/${selectedPackageId}`);
             const data = await response.json();
 
+            console.log(data.package);
+
             if(data.err){
                 console.error('Error loading packages:', data.err);
                 return;
@@ -136,14 +176,12 @@ $(document).ready(function(){
     
             let order = data.package;
 
-            $('#print-id').text(selectedPackageId);
-            $('#print-retailer-name').text(order.retailer_id);
-            $('#print-customer-name').text(order.customer_id);
-            $('#print-status-id').text(order.status_id);
             $('#print-tracking-number').text(order.tracking_number);
-            $('#print-shipping-method').text(order.shipping_method);
-            $('#print-package-weight').text(order.package_weight);
-            $('#print-cost-weight').text(order.cost_weight);
+            $('#print-retailer-name').text(order.retailer_name);
+            $('#print-retailer-address').text(order.retailer_address);
+            $('#print-customer-name').text(order.customer_name);
+            $('#print-customer-address').text(order.customer_address);
+            $('#print-status-name').text(order.status_name);
 
         } catch (error) {
             console.error('Error loading packages:', error);
@@ -169,11 +207,11 @@ $(document).ready(function(){
             let order = data.package;
 
             $('#calculate-tracking-number').text(order.trackingNumber);
-            $('#calculate-shipping-method').text(order.shippingMethod);
-            $('#calculate-flat-fee').text(order.flatFee);
+            $('#calculate-shipping-method').text(order.shippingMethod + "-day");
+            $('#calculate-flat-fee').text("$" + order.flatFee);
             $('#calculate-package-weight').text(order.packageWeight);
-            $('#calculate-cost-weight').text(order.costWeight);
-            $('#calculate-total-cost').text(order.totalCost);
+            $('#calculate-cost-weight').text("$" + order.costWeight);
+            $('#calculate-total-cost').text("$" + order.totalCost);
         } catch (error) {
             console.error('Error loading packages:', error);
         }

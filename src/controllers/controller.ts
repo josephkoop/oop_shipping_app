@@ -15,10 +15,6 @@ export const index = async (req: Request, res: Response): Promise<void> => {
 export const viewPackages = async (req: Request, res: Response): Promise<void> => {
     try {
         const packages = await PackageImpl.selectAll();
-        if(!packages){
-            res.json({ packages: [] });
-            return;
-        }
         res.json({ packages: packages });
     } catch (error) {
         console.error('Error fetching packages:', error);
@@ -84,7 +80,7 @@ export const printPackage = async (req: Request, res: Response): Promise<void> =
     let {id} = req.params;
     let convertId = parseInt(id, 10);
     try {
-        const selectPackage = await PackageImpl.selectById(convertId);
+        const selectPackage = await PackageImpl.printLabel(convertId);
         res.json({ package: selectPackage });
     } catch (error) {
         console.error(error);
